@@ -1,8 +1,16 @@
 const cheerio = require("cheerio");
 const request = require("request-promise");
+const lastId = require("./lastId");
+
 
 module.exports = async req => {
-  const url = "https://www.kijiji.ca/" + req.query.category + "/" + req.query.location + "/" + req.query.code;
+  const url =
+    "https://www.kijiji.ca/" +
+    req.query.category +
+    "/" +
+    req.query.location +
+    "/" +
+    req.query.code;
   let options = {
     uri: url,
     transform: function(body) {
@@ -10,6 +18,8 @@ module.exports = async req => {
     }
   };
 
+  let id = await lastId(req.query.category, req.query.location);
+  
   const $ = await request(options);
   let regularAds = $(".regular-ad");
   let ads = [];
@@ -21,7 +31,7 @@ module.exports = async req => {
       link: $(ad)
         .find("a.title")
         .attr("href"),
-      id: $(ad).attr('data-listing-id')
+      id: $(ad).attr("data-listing-id")
     };
   });
 

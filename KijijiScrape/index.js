@@ -5,11 +5,16 @@ module.exports = async function(context, req) {
 
   if (req.query.category) {
     let ads = await scraper(req);
-    body = ads.map(ad => ad.title.replace(/[\s\n\r]+/g, " ").trim());
+    body = ads.map(ad => {
+      return {
+        title: ad.title.replace(/[\s\n\r]+/g, " ").trim(),
+        id: ad.id,
+        link: ad.link,
+      };
+    });
     context.res = {
       // status: 200, /* Defaults to 200 */
-      body,
-      isRaw: true
+      body: JSON.stringify(body)
     };
   } else {
     context.res = {
