@@ -2,7 +2,6 @@ const cheerio = require("cheerio");
 const request = require("request-promise");
 const lastId = require("./lastId");
 
-
 module.exports = async req => {
   const url =
     "https://www.kijiji.ca/" +
@@ -18,8 +17,17 @@ module.exports = async req => {
     }
   };
 
-  let id = await lastId(req.query.category, req.query.location);
-  
+  const id = await lastId(req.query.category, req.query.location);
+  const firstId = id.firstPage(function(err, records) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    records.forEach(function(record) {
+      return record.get("lastId");
+    });
+  });
+
   const $ = await request(options);
   let regularAds = $(".regular-ad");
   let ads = [];
@@ -34,6 +42,5 @@ module.exports = async req => {
       id: $(ad).attr("data-listing-id")
     };
   });
-
   return ads;
 };

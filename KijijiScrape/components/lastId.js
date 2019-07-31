@@ -7,21 +7,23 @@ module.exports = async (category, location) => {
 
   const select =
     'AND(category = "' + category + '", location = "' + location + '")';
+  
+  return base('lastAd').select({
+    filterByFormula: select
+  });
 
-  const id = await base("lastAd")
-    .select({
-      view: "Grid view",
-      filterByFormula: select
-    })
-    .firstPage(function(err, records) {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      records.forEach(function(record) {
-        return record.get("lastId");
-      });
-    });
-
-  return id;
+  // let id = await base("lastAd")
+  //   .select({
+  //     view: "Grid view",
+  //     filterByFormula: select
+  //   })
+  //   .firstPage(function(err, records) {
+  //     if (err) {
+  //       console.error(err);
+  //       return;
+  //     }
+  //     records.forEach(function(record) {
+  //       return record.get("lastId");
+  //     });
+  //   });
 };
