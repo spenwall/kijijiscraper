@@ -2,6 +2,7 @@ const cheerio = require("cheerio");
 const request = require("request-promise");
 const lastId = require("./lastId");
 const saveLastId = require("./saveLastId");
+const mailgun = require("./mailgun");
 
 module.exports = async req => {
   const url =
@@ -32,13 +33,17 @@ module.exports = async req => {
       title: $(ad)
         .find("a.title")
         .text(),
-      link: $(ad)
+      link: "https://kijiji.ca" + $(ad)
         .find("a.title")
         .attr("href"),
       id: $(ad).attr("data-listing-id")
     };
   });
-  
-  saveLastId(req.query.category, req.query.location, ads[ads.length-1].id);
+
+  if (ads.length) {
+    const lastAd = ads[0].id;
+    saveLastId(req.query.category, req.query.location, lastAd);
+    ads.forEach((ad) => mailgun(req.query.category, ad.title, ad.link))
+  }
   return ads;
 };

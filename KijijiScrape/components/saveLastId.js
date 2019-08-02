@@ -15,6 +15,8 @@ module.exports = async (category, location, id) => {
     .firstPage(); 
 
   base("lastAd").update(row[0].id, {
+    "category": category,
+    "location": location,
     "lastId": id
   })
 }
