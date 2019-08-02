@@ -1,6 +1,7 @@
 const cheerio = require("cheerio");
 const request = require("request-promise");
 const lastId = require("./lastId");
+const saveLastId = require("./saveLastId");
 
 module.exports = async req => {
   const url =
@@ -17,21 +18,16 @@ module.exports = async req => {
     }
   };
 
-  const id = await lastId(req.query.category, req.query.location);
-  const firstId = id.firstPage(function(err, records) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    records.forEach(function(record) {
-      return record.get("lastId");
-    });
-  });
+  const adId = await lastId(req.query.category, req.query.location);
 
   const $ = await request(options);
   let regularAds = $(".regular-ad");
   let ads = [];
   regularAds.each((i, ad) => {
+    if ($(ad).attr("data-listing-id") === adId) {
+      console.log("found ad id");
+      return false;
+    }
     ads[i] = {
       title: $(ad)
         .find("a.title")
@@ -42,5 +38,7 @@ module.exports = async req => {
       id: $(ad).attr("data-listing-id")
     };
   });
+  
+  saveLastId(req.query.category, req.query.location, ads[ads.length-1].id);
   return ads;
 };
