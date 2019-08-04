@@ -1,6 +1,6 @@
 const mailgun = require('mailgun-js');
 
-module.exports = (category, title, link) => {
+module.exports = (category, ad) => {
   const apiKey = process.env['MAILGUN_API_KEY'];
   const domain = process.env['MAILGUN_DOMAIN'];
 
@@ -11,8 +11,10 @@ module.exports = (category, title, link) => {
     subject: 'New Kijiji ad',
     template: 'kijiji-ad',
     "v:category": category,
-    "v:title": title,
-    "v:link": link
+    "v:title": ad.title,
+    "v:link": ad.link,
+    "v:price": ad.price,
+    "v:image": ad.image
   };
 
   mail.messages().send(data, function(err, body) {

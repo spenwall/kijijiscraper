@@ -5,13 +5,21 @@ const saveLastId = require("./saveLastId");
 const mailgun = require("./mailgun");
 
 module.exports = async req => {
+  let category = req.query.category;
+  let location = req.query.location;
+  let code = req.query.code;  
+  let sendEmail = true;
+  if (req.query.email === "false") {
+    sendEmail = false;
+  }
+
   const url =
     "https://www.kijiji.ca/" +
-    req.query.category +
+    category +
     "/" +
-    req.query.location +
+    location +
     "/" +
-    req.query.code;
+    code;
   let options = {
     uri: url,
     transform: function(body) {
@@ -19,7 +27,7 @@ module.exports = async req => {
     }
   };
 
-  const adId = await lastId(req.query.category, req.query.location);
+  const adId = await lastId(category, location);
 
   const $ = await request(options);
   let regularAds = $(".regular-ad");
@@ -36,14 +44,18 @@ module.exports = async req => {
       link: "https://kijiji.ca" + $(ad)
         .find("a.title")
         .attr("href"),
-      id: $(ad).attr("data-listing-id")
+      id: $(ad).attr("data-listing-id"),
+      price: $(ad).find(".price").text(),
+      image: $(ad).find("img").attr("src")
     };
   });
 
   if (ads.length) {
     const lastAd = ads[0].id;
-    saveLastId(req.query.category, req.query.location, lastAd);
-    ads.forEach((ad) => mailgun(req.query.category, ad.title, ad.link))
+    saveLastId(category, location, lastAd);
+    if (sendEmail) {
+      ads.forEach((ad) => mailgun(category, ad))
+    }
   }
   return ads;
 };
