@@ -40,7 +40,7 @@ module.exports = async req => {
     ads[i] = {
       title: $(ad)
         .find("a.title")
-        .text(),
+        .text().replace(/[\s\n\r]+/g, " ").trim(),
       link: "https://kijiji.ca" + $(ad)
         .find("a.title")
         .attr("href"),

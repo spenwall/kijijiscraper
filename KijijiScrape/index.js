@@ -7,9 +7,11 @@ module.exports = async function(context, req) {
     let ads = await scraper(req);
     body = ads.map(ad => {
       return {
-        title: ad.title.replace(/[\s\n\r]+/g, " ").trim(),
+        title: ad.title,
         id: ad.id,
         link: ad.link,
+        price: ad.price,
+        image: ad.image,
       };
     });
     context.res = {
