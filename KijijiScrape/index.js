@@ -3,7 +3,7 @@ const scraper = require("./components/scraper");
 module.exports = async function(context, req) {
   context.log("JavaScript HTTP trigger function processed a request.");
 
-  if (req.query.category) {
+  if (parametersAvailable(req)) {
     let ads = await scraper(req);
     body = ads.map(ad => {
       return {
@@ -21,7 +21,17 @@ module.exports = async function(context, req) {
   } else {
     context.res = {
       status: 400,
-      body: "Please pass a name on the query string or in the request body"
+      body: "Please pass all of the following query parameters. category, location, code, email"
     };
   }
 };
+
+function parametersAvailable(req) {
+  if (!req.query.category
+    || !req.query.location
+    || !req.query.code) {
+    return false;
+  }
+
+  return true;
+}
