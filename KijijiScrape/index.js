@@ -27,8 +27,7 @@ module.exports = async function(context, req) {
 };
 
 function parametersAvailable(req) {
-  if (!req.query.url
-    || !req.query.email) {
+  if (!req.query.url || !req.query.email) {
     return false;
   }
 

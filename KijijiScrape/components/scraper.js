@@ -3,6 +3,7 @@ const request = require("request-promise");
 const lastId = require("./lastId");
 const saveLastId = require("./saveLastId");
 const mailgun = require("./mailgun");
+const { URL } = require('url');
 
 module.exports = async req => {
   let url = req.query.url;
