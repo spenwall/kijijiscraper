@@ -29,7 +29,8 @@ module.exports = async function(context, req) {
 function parametersAvailable(req) {
   if (!req.query.category
     || !req.query.location
-    || !req.query.code) {
+    || !req.query.code
+    || !req.query.email) {
     return false;
   }
 

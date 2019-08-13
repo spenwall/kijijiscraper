@@ -8,6 +8,7 @@ module.exports = async req => {
   let category = req.query.category;
   let location = req.query.location;
   let code = req.query.code;  
+  let email = req.query.email;
   let sendEmail = true;
   if (req.query.email === "false") {
     sendEmail = false;
@@ -54,7 +55,7 @@ module.exports = async req => {
     const lastAd = ads[0].id;
     saveLastId(category, location, lastAd);
     if (sendEmail) {
-      ads.forEach((ad) => mailgun(category, ad))
+      ads.forEach((ad) => mailgun(category, ad, email))
     }
   }
   return ads;

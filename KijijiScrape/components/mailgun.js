@@ -1,13 +1,13 @@
 const mailgun = require('mailgun-js');
 
-module.exports = (category, ad) => {
+module.exports = (category, ad, email) => {
   const apiKey = process.env['MAILGUN_API_KEY'];
   const domain = process.env['MAILGUN_DOMAIN'];
 
   const mail = mailgun({apiKey, domain})
   const data = {
     from: 'Kijiji Alerts <alert@rfd.spencerwallace.ca>',
-    to: 'dude.wallace@gmail.com',
+    to: email,
     subject: 'New Kijiji ad',
     template: 'kijiji-ad',
     "v:category": category,
