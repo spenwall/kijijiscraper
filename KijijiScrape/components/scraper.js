@@ -5,16 +5,21 @@ const saveLastId = require("./saveLastId");
 const mailgun = require("./mailgun");
 
 module.exports = async req => {
-  let category = req.query.category;
-  let location = req.query.location;
-  let code = req.query.code;  
+  let url = req.query.url;
   let email = req.query.email;
   let sendEmail = true;
   if (req.query.email === "false") {
     sendEmail = false;
   }
 
-  const url =
+  const address = new URL(url);
+  const path = address.pathname;
+  const pathParts = path.split('/');
+  const category = pathParts[1];
+  const location = pathParts[2];
+  const code = pathParts[3];
+  
+  const kijijUrl =
     "https://www.kijiji.ca/" +
     category +
     "/" +
@@ -22,7 +27,7 @@ module.exports = async req => {
     "/" +
     code;
   let options = {
-    uri: url,
+    uri: kijijUrl,
     transform: function(body) {
       return cheerio.load(body);
     }

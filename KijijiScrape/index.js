@@ -21,15 +21,13 @@ module.exports = async function(context, req) {
   } else {
     context.res = {
       status: 400,
-      body: "Please pass all of the following query parameters. category, location, code, email"
+      body: "Please pass all of the following query parameters. url, email"
     };
   }
 };
 
 function parametersAvailable(req) {
-  if (!req.query.category
-    || !req.query.location
-    || !req.query.code
+  if (!req.query.url
     || !req.query.email) {
     return false;
   }
