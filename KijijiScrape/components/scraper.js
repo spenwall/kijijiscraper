@@ -60,7 +60,7 @@ module.exports = async req => {
   if (ads.length) {
     const lastAd = ads[0].id;
     saveLastId(category, location, lastAd);
-    if (sendEmail) {
+    if (sendEmail && adId !== null) {
       ads.forEach((ad) => mailgun(category, ad, email))
     }
   }

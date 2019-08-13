@@ -16,7 +16,7 @@ module.exports = async (category, location) => {
 
   if (row.length === 0) {
     createNewRow(category, location);
-    return;
+    return null;
   }
   return row[0].fields.lastId;
 };
