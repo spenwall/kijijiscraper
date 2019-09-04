@@ -38,13 +38,13 @@ module.exports = async req => {
 
   const $ = await request(options);
   let regularAds = $(".regular-ad");
-  let ads = [];
+  let allAds = [];
   regularAds.each((i, ad) => {
-    if ($(ad).attr("data-listing-id") === adId) {
-      console.log("found ad id");
-      return false;
-    }
-    ads[i] = {
+    // if ($(ad).attr("data-listing-id") === adId) {
+    //   console.log("found ad id");
+    //   return false;
+    // }
+    allAds[i] = {
       title: $(ad)
         .find("a.title")
         .text().replace(/[\s\n\r]+/g, " ").trim(),
@@ -57,12 +57,22 @@ module.exports = async req => {
     };
   });
 
-  if (ads.length) {
-    const lastAd = ads[0].id;
-    saveLastId(category, location, lastAd);
-    if (sendEmail && adId !== null) {
-      ads.forEach((ad) => mailgun(category, ad, email))
+  var newAds = [];
+  if (allAds.length) {
+    const allId = allAds.map(ad => ad.id);
+    const ids = allId.join(',');
+    saveLastId(category, location, ids);
+    if (adId !== null) {
+      for (ad of allAds) {
+        if (adId.includes(ad.id)) {
+          break;
+        }
+        if (sendEmail) {
+          mailgun(category, ad, email)
+        }
+        newAds.push(ad);
+      }
     }
   }
-  return ads;
+  return newAds;
 };

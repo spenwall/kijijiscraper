@@ -18,7 +18,7 @@ module.exports = async (category, location) => {
     createNewRow(category, location);
     return null;
   }
-  return row[0].fields.lastId;
+  return row[0].fields.lastId.split(',');
 };
 
 createNewRow = (category, location) => {
