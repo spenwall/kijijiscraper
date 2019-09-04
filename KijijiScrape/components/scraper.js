@@ -62,17 +62,28 @@ module.exports = async req => {
     const allId = allAds.map(ad => ad.id);
     const ids = allId.join(',');
     saveLastId(category, location, ids);
-    if (adId !== null) {
-      for (ad of allAds) {
-        if (adId.includes(ad.id)) {
-          break;
-        }
-        if (sendEmail) {
-          mailgun(category, ad, email)
-        }
-        newAds.push(ad);
+    var newAds = getNewAds(allAds, adId);
+    newAds.forEach(ad => {
+      if (sendEmail) {
+        mailgun(category, ad, email)
       }
-    }
+    })
+    
   }
   return newAds;
 };
+
+getNewAds = (allAds, adId) => {
+  if (adId === null) {
+    return [];
+  }
+  var newAds = [];
+  for (ad of allAds) {
+    if (adId.includes(ad.id)) {
+      break;
+    }
+    newAds.push(ad);
+  }
+
+  return newAds;
+}
