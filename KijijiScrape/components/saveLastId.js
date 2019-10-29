@@ -5,15 +5,16 @@ module.exports = async (url, id) => {
 
   let base = new Airtable({ apiKey }).base("apphLaGAQCdurVkEG");
 
+  const select = 'AND(url = "' + url + '")';
+  
   let row = await base("lastAd")
     .select({
       view: "Grid view",
+      filterByFormula: select
     })
     .firstPage(); 
 
-  console.log(row)
   base("lastAd").update(row[0].id, {
-    "url": url,
     "lastId": id
   })
 }
