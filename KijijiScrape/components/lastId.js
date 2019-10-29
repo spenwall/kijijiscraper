@@ -1,33 +1,29 @@
 const Airtable = require("airtable");
 const apiKey = process.env["AIRTABLE_API_KEY"];
 
-module.exports = async (category, location) => {
+module.exports = async (url) => {
   var base = new Airtable({ apiKey }).base("apphLaGAQCdurVkEG");
-
-  const select =
-    'AND(category = "' + category + '", location = "' + location + '")';
 
   let row = await base("lastAd")
     .select({
       view: "Grid view",
-      filterByFormula: select
     })
     .firstPage();
 
   if (row.length === 0) {
-    createNewRow(category, location);
+    createNewRow(url);
     return null;
   }
+
   return row[0].fields.lastId.split(',');
 };
 
-createNewRow = (category, location) => {
+createNewRow = (url) => {
   let base = new Airtable({ apiKey }).base("apphLaGAQCdurVkEG");
 
   base("lastAd").create(
     {
-      category: category,
-      location: location,
+      url
     },
     function(err, record) {
       if (err) {

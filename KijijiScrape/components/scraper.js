@@ -34,10 +34,11 @@ module.exports = async req => {
     }
   };
 
-  const adId = await lastId(category, location);
+  const adId = await lastId(url);
 
   const $ = await request(options);
-  let regularAds = $(".regular-ad");
+  let regularAds = $(".search-item");
+  console.log(regularAds.length)
   let allAds = [];
   regularAds.each((i, ad) => {
     // if ($(ad).attr("data-listing-id") === adId) {
@@ -61,7 +62,7 @@ module.exports = async req => {
   if (allAds.length) {
     const allId = allAds.map(ad => ad.id);
     const ids = allId.join(',');
-    saveLastId(category, location, ids);
+    saveLastId(url, ids);
     var newAds = getNewAds(allAds, adId);
     newAds.forEach(ad => {
       if (sendEmail) {
