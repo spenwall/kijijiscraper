@@ -54,7 +54,7 @@ module.exports = async req => {
         .attr("href"),
       id: $(ad).attr("data-listing-id"),
       price: $(ad).find(".price").text(),
-      image: $(ad).find("img").attr("src")
+      image: $(ad).find("img").attr("data-src")
     };
   });
 
